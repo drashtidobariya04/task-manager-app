@@ -31,3 +31,6 @@ Task Detail — Dynamic route /tasks/[id] with loading skeleton and error state
 Create Task — Modal form with validation (title required, min 3 characters), stored in Redux
 Merged List — Locally created tasks appear at the top of the list, merged with API results
 Responsive — Fully usable from 360px mobile to 1280px+ desktop
+
+- **Dark / Light Mode** — Toggle in the header, persists across sessions via localStorage
+- **Local Task Persistence** — Locally created tasks survive page refresh via redux-persist
