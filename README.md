@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Manager
+
+A production-quality task management app built with Next.js 14 (App Router), TypeScript, Redux Toolkit, TanStack Query, and Tailwind CSS.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
+cp .env
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) — it redirects to `/tasks`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Architecture Decisions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**State separation:** Redux manages only locally created tasks. All server state (fetched tasks, individual task detail) lives in TanStack Query's cache. These two are intentionally never mixed — merging happens at the component/hook level, not in the store.
 
-## Learn More
+**Debounce with useRef:** Rather than a custom hook, debouncing is handled inline in the tasks page using `useRef` + `setTimeout`. This keeps the logic visible and avoids an abstraction layer that isn't reused anywhere else.
 
-To learn more about Next.js, take a look at the following resources:
+**TypeScript discriminated union:** `Task = ApiTask | LocalTask` with `isLocal: true` as a literal on `LocalTask`. This makes it safe to distinguish the two types at runtime without type assertions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**No UI libraries:** All styling is Tailwind CSS. Components are composed from scratch to match what a production codebase would expect.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Features**
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Task List — Paginated list of 200 tasks fetched from JSONPlaceholder (10 per page)
+Search — Debounced title search (300ms), resets to page 1 on change
+Filter — All / Completed / Pending, resets to page 1 on change
+Task Detail — Dynamic route /tasks/[id] with loading skeleton and error state
+Create Task — Modal form with validation (title required, min 3 characters), stored in Redux
+Merged List — Locally created tasks appear at the top of the list, merged with API results
+Responsive — Fully usable from 360px mobile to 1280px+ desktop
