@@ -15,3 +15,4 @@ export interface LocalTask {
 
 export type Task = ApiTask | LocalTask;
 
+export type FilterStatus = 'all' | 'completed' | 'pending';
