@@ -12,8 +12,22 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-gray-50 min-h-screen`}>
+    <html lang="en" suppressHydrationWarning className="bg-gray-50 dark:bg-gray-950">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch {}
+            `,
+          }}
+        />
+      </head>
+      <body className={`${inter.className} min-h-screen bg-gray-50 dark:bg-gray-950`}>
         <Providers>
           <main className="max-w-4xl mx-auto px-4 py-8">
             {children}
